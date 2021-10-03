@@ -1,0 +1,31 @@
+.description {
+  width: 100%;
+  margin: 1em 0em 1em 0em;
+  border: 1px solid black;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+
+  &__text {
+    margin: 0.2em;
+  }
+
+  &__link {
+    align-self: flex-end;
+    cursor: pointer;
+    border: 0;
+    background-color: white;
+    margin: 0.5em;
+  }
+
+  &__inputText {
+    width: 100%;
+    height: fit-content;
+    border: 0;
+    height: 10em;
+  }
+}
+
+.submitBtn {
+  // TODO
+}

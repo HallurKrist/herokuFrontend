@@ -1,0 +1,53 @@
+@import '../../base.module.scss';
+
+
+.selectionBox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 2em;
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+
+  }
+
+  &__button {
+    border: 0.5px solid lightgrey;
+    background-color: white;
+    border-radius: 5px;
+    width: 10em;
+    height: 5em;
+    margin: 0.2em 0.5em 0.2em 0.5em;
+
+    :hover {
+      background-color: var(--secondary-color);
+      border-radius: 30px;
+    }
+  }
+
+  // &__icon {
+  //   border: none;
+  //   background-color: white;
+  //   width: 3em;
+  //   height: 3em;
+  //   margin: 0.2em 0.5em 0.2em 0.5em;
+  //   border-radius: 5px;
+  //   background-image: url(https://placekitten.com/100/100);
+  //   background-size: cover;
+  // }
+
+  &__seperator {
+    margin: 1em;
+    margin-left: 6em;
+    margin-right: 6em;
+    border-bottom: 1px solid black;
+  }
+}
+
+.title {
+  margin: 0.5em 1em 0em 1em;
+  text-decoration: underline;
+  font-size: 1.5em;
+}
