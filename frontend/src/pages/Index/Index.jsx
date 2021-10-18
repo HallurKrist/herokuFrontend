@@ -13,12 +13,13 @@ export function Index() {
   return (
     <div className={s.page}>
       <div className={s.page__header}>
-        <Navigation/>
+        <Navigation onHome={true}/>
       </div>
       <div className={s.page__image}>
         <IndexImage/>
       </div>
       <div id="content" className={s.page__about}>
+        <img className={s.page__about__bgImg} src={'/frontpageImg/vinnumynd.jpg'} alt="TODO"/>
         <About/>
       </div>
     </div>
