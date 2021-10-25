@@ -10,10 +10,10 @@ export function IndexImage() {
         <figure className={s.image__figure}>
           <img src='/frontpageImg/overview.JPG' className={s.image__pic}/>
           <figcaption className={s.image__figcaption}>
-            Photo by <a>someone</a>, of the excavations in progress.
+            The Skálholt site like it is today.
           </figcaption>
         </figure>
-        <div className={s.image__blur}/>
+        <div className={s.image__blur} style={{backgroundImage: "url(/frontpageImg/overview.JPG)"}}/>
         <a href="#content"><button className={s.image__button} style={{backgroundImage: "url(/util/down-arrow.svg)"}}/></a>
       </div>
     </div>

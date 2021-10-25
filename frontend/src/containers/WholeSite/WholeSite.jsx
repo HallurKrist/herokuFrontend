@@ -7,6 +7,7 @@ import { Description } from '../../components/Description/Description';
 import { MapSidebar } from '../../components/MapSidebar/MapSidebar';
 import { MapSlider } from '../../components/MapSlider/MapSlider';
 import { SelectionBox } from '../../components/SelectionBox/SelectionBox';
+import { joinUrls } from '../../Utils/utils';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -34,8 +35,6 @@ export function WholeSite() {
   }
 
   function setBGImageByYear(_year) {
-    console.log(_year)
-    console.log(years)
     for (var i = 0; i < years?.length; i++) {
       if (years[i].year === _year) {
         setBackgroundImage(years[i].image);
@@ -104,12 +103,27 @@ export function WholeSite() {
     window.localStorage.setItem('currYear', year);
   }, [year]);
 
+  useEffect(() => {
+    async function preLoadMapImages() {
+      for (var i = 0; i < years.length; i++) {
+        let url = joinUrls(apiUrl, years[i]?.image);
+
+        const map = new Image();
+        map.src = url;
+      }
+    }
+
+    if (years) {
+      preLoadMapImages();
+    }
+  }, [years])
+
   return (
     <div className={s.container}>
       <Description description={years?.filter(y => y.year === year)[0].description}
         year={year}
         buildingId={null}
-        limit={300}
+        limit={150}
         limited={limited}
         setLimited={setLimited}/>
       {!expanded &&

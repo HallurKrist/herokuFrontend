@@ -14,7 +14,7 @@ export function FindsIcon({fGroup, fragments, index, iconData}) {
   const [anchorElHover, setAnchorElHover] = useState(null);
 
   //background image
-  var bImage = {backgroundImage: `url(/findsIcons/${fGroup}.jpg)`}
+  var bImage = {backgroundImage: `url(/findsIcons/${fGroup}.ico)`}
 
   function onclick(event) {
     setAnchorElClick(event?.target)
@@ -30,7 +30,6 @@ export function FindsIcon({fGroup, fragments, index, iconData}) {
 
   function onEnter(event) {
     setAnchorElHover(event?.target);
-    console.log(event)
   }
 
   const openClick = Boolean(anchorElClick);
