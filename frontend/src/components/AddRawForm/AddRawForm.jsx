@@ -1,11 +1,13 @@
 import s from "./addRawForm.module.scss";
 
+import fs from 'fs';
 import { Form } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import Button from "react-bootstrap/Button";
 import { useHistory } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { joinUrls } from "../../Utils/utils";
+import FormData from 'form-data';
 
 // backend root url
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -17,9 +19,12 @@ export function AddRawForm() {
   const [type, setType] = useState('');
   // tracks file if a file is being uploaded
   const [file, setFile] = useState(null);
+  const [filePath, setFilePath] = useState('');
   // tracks reference info if reference is being uploaded
   const [ref, setRef] = useState(['','','']);
   const [validRef, setValidRef] = useState(false);
+  // what major group is being added
+  const [majorGroup, setMajorGroup] = useState('');
   // errors
   const [error, setError] = useState(null);
 
@@ -36,20 +41,43 @@ export function AddRawForm() {
   useEffect(() => {
     const requestOptions = {
       method: 'POST',
-      headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${admin}` }
+      headers: {'Authorization': `Bearer ${admin}` }
     };
     async function request() {
       let json;
       try {
         let url = '';
 
+        const body = new FormData();
+
         if (type === 'File') {
+          debugger;
           let _type = file.type.split('/')[1];  // get the type of the file (pdf/webp/tiff/jpeg/vnd.ms-excel)
-          console.log(_type)
-          if (_type === 'pdf') url = joinUrls(apiUrl, 'pdf');   // pdf files
-          if (_type === 'webp' || _type === 'jpeg' || _type === 'tiff') url = joinUrls(apiUrl, 'images');   // 3 types of images
-          if (_type === 'vnd.ms-excel') url = joinUrls(apiUrl, 'csv');  // excel files (.csv)
-          requestOptions['body'] = JSON.stringify({ file: file });
+          if (_type === 'pdf') {
+            url = joinUrls(apiUrl, 'pdf');   // pdf files
+            body.append('major_group', majorGroup);
+            body.append('tag', `${file.name}`)
+
+            let size = file.size;
+            body.append('file', file, {knownLength: size});
+          }
+          if (_type === 'webp' || _type === 'jpeg' || _type === 'tiff') {
+            url = joinUrls(apiUrl, 'images');   // 3 types of images
+            body.append('major_group', majorGroup);
+            body.append('tag', `${file.name}`)
+
+            let size = file.size;
+            body.append('image', file, {knownLength: size});
+          }
+          if (_type === 'vnd.ms-excel') {
+            url = joinUrls(apiUrl, 'csv');  // excel files (.csv)
+            body.append('major_group', majorGroup);
+            body.append('tag', `${file.name}`)
+
+            let size = file.size;
+            body.append('file', file, {knownLength: size});
+          }
+          requestOptions['body'] = body;
         }
         if (type === 'Reference') {
           url = joinUrls(apiUrl, 'references')
@@ -66,6 +94,7 @@ export function AddRawForm() {
 
         const result = await fetch(url, requestOptions);
         if (!result.ok) {
+          console.log(result)
           throw new Error(result.statusText);
         }
 
@@ -97,7 +126,10 @@ export function AddRawForm() {
   }
 
   function fileUpload(event) {
+    console.log(event)
     setFile(event?.target?.files[0]);
+    setFilePath(event?.target?.value)
+    console.log(file)
   }
 
   function refRefUpload(event) {
@@ -122,6 +154,10 @@ export function AddRawForm() {
 
     setRef(newRef);
     setValidRef(ref[0] !== '' && ref[1] !== '');
+  }
+
+  function majorGroupChange(event) {
+    setMajorGroup(event?.target?.value);
   }
 
   function validateForm() {
@@ -154,12 +190,23 @@ export function AddRawForm() {
             onClick={radioClick}
           />
         </div>
-        {type === "File" &&
+
+        <Form.Group className={s.majorGroup}
+          controlId="majorGroup">
+          <Form.Label>Major group</Form.Label>
+          <Form.Control as="textarea"
+            placeholder="majorGroup"
+            className={s.majorGroup__text}
+            onChange={majorGroupChange}>
+          </Form.Control>
+        </Form.Group>
+
+        {(type === "File" && majorGroup !== '') &&
           <Form.Group controlId="formFile" className={s.fileUpload}>
             <Form.Control type="file" onChange={fileUpload}/>
           </Form.Group>
         }
-        {type === "Reference" &&
+        {(type === "Reference" && majorGroup !== '') &&
           <div className={s.reference}>
             <Form.Group className={s.reference__group}
             controlId="refReference">
@@ -190,7 +237,7 @@ export function AddRawForm() {
             </Form.Group>
           </div>
         }
-        {type === "File" && file !== null &&
+        {(type === "File" && file !== null && majorGroup !== '') &&
           <Button block size="lg"
             type="submit"
             className={s.submitBtn}
@@ -198,7 +245,7 @@ export function AddRawForm() {
             Submit
           </Button>
         }
-        {type === "Reference" && validRef &&
+        {(type === "Reference" && validRef && majorGroup !== '') &&
           <Button block size="lg"
             type="submit"
             className={s.submitBtn}
